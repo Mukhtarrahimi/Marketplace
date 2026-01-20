@@ -234,7 +234,7 @@ export default function SearchBarSection() {
 
           {/* Search button */}
           <div className="w-full md:w-auto">
-            <Button className="h-11 w-full rounded-sm px-6 md:w-auto" style={{ backgroundColor: BRAND }}>
+            <Button className="h-11 w-full rounded-sm px-6 md:w-auto cursor-pointer" style={{ backgroundColor: BRAND }}>
               جستجو
             </Button>
           </div>

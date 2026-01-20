@@ -29,7 +29,7 @@ export default function Navbar() {
           <div className="flex items-center gap-5">
             <Link href="/" className="flex items-center gap-2">
               <Image
-                src="/images/logo.webp"
+                src="/images/logo.png"
                 alt="Logo"
                 width={42}
                 height={42}
