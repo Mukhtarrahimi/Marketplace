@@ -1,3 +1,5 @@
+import "./globals.css";
+import Navbar from "@/components/navbar/Navbar";
 export const metadata = {
   title: "Mixbazar",
   description: "",
@@ -10,7 +12,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fa">
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
