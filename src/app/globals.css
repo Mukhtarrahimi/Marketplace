@@ -113,29 +113,9 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
-@font-face {
-    font-family: "IRANYekan";
-    src: url("/fonts/Yekan.woff") format("woff2");
-    font-weight: 400;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: "IRANYekan";
-    src: url("/fonts/iranyekan/IRANYekanMedium.woff2") format("woff2");
-    font-weight: 500;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: "IRANYekan";
-    src: url("/fonts/iranyekan/IRANYekanBold.woff2") format("woff2");
-    font-weight: 700;
-    font-style: normal;
-}
-
-body {
-    font-family: "IRANYekan", sans-serif;
+/* Font */
+html, body {
+  font-family: var(--font-vazirmatn), system-ui, sans-serif;
 }
 
 @layer base {
