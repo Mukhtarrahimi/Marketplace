@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
+import HeroSlider from "@/components/site/HeroSlider";
 export const metadata = {
   title: "Mixbazar",
   description: "",
@@ -14,6 +15,7 @@ export default function RootLayout({
     <html lang="fa">
       <body>
         <Navbar />
+        <HeroSlider/>
         {children}
       </body>
     </html>
