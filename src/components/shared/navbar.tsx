@@ -17,12 +17,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetClose,
-} from "@/components/ui/sheet"
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Tooltip,
@@ -31,14 +26,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-/** ✅ Mock Auth (بعداً با auth واقعی جایگزین می‌شود) */
+/** ✅ Mock Auth */
 function useAuthMock() {
   const isAuthenticated = false
   const user = isAuthenticated ? { name: "Rahimi", avatarUrl: "" } : null
   return { isAuthenticated, user }
 }
 
-/** ✅ Desktop links (قدیمی‌ها حفظ شد) */
 const desktopLinks = [
   { label: "خانه", href: "/" },
   { label: "آگهی‌ها", href: "/ads" },
@@ -47,7 +41,6 @@ const desktopLinks = [
   { label: "رهنمایی", href: "/help" },
 ]
 
-/** ✅ Mobile drawer links */
 const drawerLinks = [
   { label: "خانه", href: "/", icon: Home },
   { label: "آگهی‌ها", href: "/ads", icon: Home },
@@ -67,7 +60,6 @@ function DesktopIconWithTooltip({
     <TooltipProvider delayDuration={120}>
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        {/* ✅ فقط دسکتاپ: tooltip کوچک */}
         <TooltipContent
           side="bottom"
           className="hidden rounded-md px-2 py-1 text-[11px] md:block"
@@ -92,8 +84,7 @@ export function Navbar() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* ✅ Right: Logo + links */}
           <div className="flex items-center gap-10">
-            {/* ✅ فقط لوگو بدون متن */}
-            <Link href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center">
               <div className="relative h-10 w-10 overflow-hidden rounded-md">
                 <Image
                   src="/images/logo.png"
@@ -105,7 +96,6 @@ export function Navbar() {
               </div>
             </Link>
 
-            {/* ✅ Desktop links (قدیمی‌ها) */}
             <nav className="hidden items-center gap-6 md:flex">
               {desktopLinks.map((item) => {
                 const active = pathname === item.href
@@ -127,7 +117,7 @@ export function Navbar() {
 
           {/* ✅ Left: actions */}
           <div className="flex items-center gap-2">
-            {/* Create Ad - desktop only full button, mobile handled in bottom nav */}
+            {/* Create Ad - desktop */}
             <Button asChild className="hidden rounded-md md:inline-flex">
               <Link href={createAdHref} className="gap-2">
                 <Plus className="h-4 w-4" />
@@ -135,7 +125,7 @@ export function Navbar() {
               </Link>
             </Button>
 
-            {/* ✅ Desktop icons with tooltip (فقط این 3 تا) */}
+            {/* ✅ Desktop tooltips (only desktop) */}
             <DesktopIconWithTooltip label="علاقه‌مندی‌ها">
               <Button
                 variant="ghost"
@@ -166,7 +156,7 @@ export function Navbar() {
               </Button>
             </DesktopIconWithTooltip>
 
-            {/* ✅ Desktop auth/profile */}
+            {/* Desktop auth/profile */}
             <div className="hidden md:block">
               {!isAuthenticated ? (
                 <Button variant="outline" asChild className="rounded-md">
@@ -182,7 +172,7 @@ export function Navbar() {
               )}
             </div>
 
-            {/* ✅ Mobile hamburger (زیباتر + sheet) */}
+            {/* ✅ Mobile hamburger + sheet */}
             <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
@@ -197,8 +187,9 @@ export function Navbar() {
                   </button>
                 </SheetTrigger>
 
-                <SheetContent side="right" className="w-[300px] p-0">
-                  {/* ✅ Top bar فقط X */}
+                {/* ✅ make it scrollable */}
+                <SheetContent side="right" className="w-[300px] p-0 flex flex-col h-dvh">
+                  {/* ✅ Top: ONLY ONE X (right) */}
                   <div className="flex items-center justify-end border-b p-3">
                     <SheetClose asChild>
                       <button
@@ -210,8 +201,8 @@ export function Navbar() {
                     </SheetClose>
                   </div>
 
-                  {/* ✅ Profile center */}
-                  <div className="flex flex-col items-center justify-center px-6 py-8 text-center">
+                  {/* ✅ Profile center (moved UP) */}
+                  <div className="flex flex-col items-center justify-center px-6 py-5 -mt-2 text-center">
                     <Avatar className="h-16 w-16 rounded-full">
                       <AvatarImage src={user?.avatarUrl || ""} />
                       <AvatarFallback className="bg-primary text-white">
@@ -222,20 +213,22 @@ export function Navbar() {
                     <p className="mt-3 text-sm font-bold">
                       {isAuthenticated ? user?.name : "کاربر مهمان"}
                     </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      خوش آمدید
-                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">خوش آمدید</p>
                   </div>
 
-                  {/* ✅ Links بدون hover */}
-                  <nav className="flex flex-col gap-1 px-3 pb-4">
+                  {/* ✅ Links: scroll if too many */}
+                  <nav className="flex-1 overflow-y-auto flex flex-col gap-1 px-3 pb-4">
                     {drawerLinks.map((item) => {
                       const Icon = item.icon
+                      const active = pathname === item.href
                       return (
                         <SheetClose asChild key={item.href}>
                           <Link
                             href={item.href}
-                            className="flex items-center gap-3 rounded-md px-3 py-3 text-sm"
+                            className={cn(
+                              "flex items-center gap-3 rounded-md px-3 py-3 text-sm",
+                              active ? "text-primary" : ""
+                            )}
                           >
                             <Icon className="h-5 w-5" />
                             {item.label}
@@ -244,7 +237,7 @@ export function Navbar() {
                       )
                     })}
 
-                    {/* ✅ Last item: login/logout (بدون button، فقط item) */}
+                    {/* ✅ Last item: login/logout (NOT a button) */}
                     <div className="mt-2 border-t pt-2">
                       {isAuthenticated ? (
                         <button className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm text-destructive">
@@ -287,7 +280,6 @@ export function Navbar() {
             اعلانات
           </Link>
 
-          {/* ✅ Create Ad وسط */}
           <Link
             href={createAdHref}
             className="flex h-14 w-14 -translate-y-6 items-center justify-center rounded-full bg-primary text-white shadow-lg"
