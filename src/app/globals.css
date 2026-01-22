@@ -118,6 +118,11 @@ html, body {
   font-family: var(--font-vazirmatn), system-ui, sans-serif;
 }
 
+body {
+  padding-bottom: 80px;
+}
+
+
 @layer base {
     * {
         @apply border-border outline-ring/50;
