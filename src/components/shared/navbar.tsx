@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image"
 import { Heart, Bell, Plus, Menu } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -54,13 +55,14 @@ export function Navbar() {
         {/* Right side: Logo + nav */}
         <div className="flex items-center gap-10">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-md bg-primary text-primary-foreground">
-              <span className="text-sm font-bold">MB</span>
-            </div>
-            <span className="hidden text-base font-bold sm:inline">
-              MIX BAZAR
-            </span>
+          <Link href="/">
+            <Image
+              src="/images/logo.png"
+              alt="Mix Bazar"
+              width={42}
+              height={42}
+              priority
+            />
           </Link>
 
           {/* Desktop links */}
