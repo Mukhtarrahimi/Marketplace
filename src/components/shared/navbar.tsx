@@ -3,6 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
+import * as React from "react"
 
 import {
   Heart,
@@ -13,6 +14,11 @@ import {
   Home,
   User,
   LogOut,
+  Globe,
+  Info,
+  LifeBuoy,
+  BookOpen,
+  LayoutGrid,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -25,12 +31,25 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 /** ✅ Mock Auth */
 function useAuthMock() {
   const isAuthenticated = false
   const user = isAuthenticated ? { name: "Rahimi", avatarUrl: "" } : null
   return { isAuthenticated, user }
+}
+
+/** ✅ UI-only Language (بعداً وصلش می‌کنیم به i18n واقعی) */
+type Lang = "fa" | "ps" | "en"
+function useLangMock() {
+  const [lang, setLang] = React.useState<Lang>("fa")
+  return { lang, setLang }
 }
 
 const desktopLinks = [
@@ -41,12 +60,16 @@ const desktopLinks = [
   { label: "رهنمایی", href: "/help" },
 ]
 
+/** ✅ Drawer Links (همه آیتم‌ها، شامل about/support/help) */
 const drawerLinks = [
   { label: "خانه", href: "/", icon: Home },
-  { label: "آگهی‌ها", href: "/ads", icon: Home },
+  { label: "آگهی‌ها", href: "/ads", icon: LayoutGrid },
   { label: "چت", href: "/messages", icon: MessageSquare },
   { label: "اعلانات", href: "/notifications", icon: Bell },
   { label: "پروفایل", href: "/panel/profile", icon: User },
+  { label: "درباره ما", href: "/about", icon: Info },
+  { label: "پشتیبانی", href: "/support", icon: LifeBuoy },
+  { label: "رهنمایی", href: "/help", icon: BookOpen },
 ]
 
 function DesktopIconWithTooltip({
@@ -71,9 +94,16 @@ function DesktopIconWithTooltip({
   )
 }
 
+function LangLabel(lang: Lang) {
+  if (lang === "fa") return "فارسی"
+  if (lang === "ps") return "پشتو"
+  return "English"
+}
+
 export function Navbar() {
   const pathname = usePathname()
   const { isAuthenticated, user } = useAuthMock()
+  const { lang, setLang } = useLangMock()
 
   const createAdHref = isAuthenticated ? "/panel/ads/new" : "/register"
 
@@ -82,8 +112,9 @@ export function Navbar() {
       {/* ✅ TOP NAVBAR */}
       <header className="sticky top-0 z-50 w-full border-b bg-white">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* ✅ Right: Logo + links */}
-          <div className="flex items-center gap-10">
+          {/* ✅ Right: Logo + Lang + links */}
+          <div className="flex items-center gap-6">
+            {/* Logo only */}
             <Link href="/" className="flex items-center">
               <div className="relative h-10 w-10 overflow-hidden rounded-md">
                 <Image
@@ -96,6 +127,35 @@ export function Navbar() {
               </div>
             </Link>
 
+            {/* ✅ Language switch (after logo) */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className={cn(
+                    "hidden md:inline-flex items-center gap-2 rounded-md border bg-white px-3 py-2 text-sm",
+                    "transition hover:bg-muted"
+                  )}
+                  aria-label="انتخاب زبان"
+                >
+                  <Globe className="h-4 w-4 text-primary" />
+                  <span className="font-medium">{LangLabel(lang)}</span>
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="start" className="w-40 rounded-md">
+                <DropdownMenuItem onClick={() => setLang("fa")}>
+                  فارسی
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setLang("ps")}>
+                  پشتو
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setLang("en")}>
+                  English
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Desktop links */}
             <nav className="hidden items-center gap-6 md:flex">
               {desktopLinks.map((item) => {
                 const active = pathname === item.href
@@ -125,7 +185,7 @@ export function Navbar() {
               </Link>
             </Button>
 
-            {/* ✅ Desktop tooltips (only desktop) */}
+            {/* Desktop tooltips (only desktop) */}
             <DesktopIconWithTooltip label="علاقه‌مندی‌ها">
               <Button
                 variant="ghost"
@@ -187,9 +247,8 @@ export function Navbar() {
                   </button>
                 </SheetTrigger>
 
-                {/* ✅ make it scrollable */}
                 <SheetContent side="right" className="w-[300px] p-0 flex flex-col h-dvh">
-                  {/* ✅ Top: ONLY ONE X (right) */}
+                  {/* Top: only one X */}
                   <div className="flex items-center justify-end border-b p-3">
                     <SheetClose asChild>
                       <button
@@ -201,8 +260,38 @@ export function Navbar() {
                     </SheetClose>
                   </div>
 
-                  {/* ✅ Profile center (moved UP) */}
-                  <div className="flex flex-col items-center justify-center px-6 py-5 -mt-2 text-center">
+                  {/* ✅ Mobile language switch inside sheet */}
+                  <div className="px-3 pt-3">
+                    <div className="flex items-center justify-between rounded-md border px-3 py-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Globe className="h-4 w-4 text-primary" />
+                        <span className="font-medium">زبان</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <button
+                          onClick={() => setLang("fa")}
+                          className={cn("px-2 py-1 rounded-md border", lang === "fa" && "border-primary text-primary")}
+                        >
+                          FA
+                        </button>
+                        <button
+                          onClick={() => setLang("ps")}
+                          className={cn("px-2 py-1 rounded-md border", lang === "ps" && "border-primary text-primary")}
+                        >
+                          PS
+                        </button>
+                        <button
+                          onClick={() => setLang("en")}
+                          className={cn("px-2 py-1 rounded-md border", lang === "en" && "border-primary text-primary")}
+                        >
+                          EN
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Profile center */}
+                  <div className="flex flex-col items-center justify-center px-6 py-5 -mt-1 text-center">
                     <Avatar className="h-16 w-16 rounded-full">
                       <AvatarImage src={user?.avatarUrl || ""} />
                       <AvatarFallback className="bg-primary text-white">
@@ -216,7 +305,7 @@ export function Navbar() {
                     <p className="mt-1 text-xs text-muted-foreground">خوش آمدید</p>
                   </div>
 
-                  {/* ✅ Links: scroll if too many */}
+                  {/* Links: scroll if too many */}
                   <nav className="flex-1 overflow-y-auto flex flex-col gap-1 px-3 pb-4">
                     {drawerLinks.map((item) => {
                       const Icon = item.icon
@@ -237,7 +326,7 @@ export function Navbar() {
                       )
                     })}
 
-                    {/* ✅ Last item: login/logout (NOT a button) */}
+                    {/* Last item: login/logout (not button) */}
                     <div className="mt-2 border-t pt-2">
                       {isAuthenticated ? (
                         <button className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm text-destructive">
